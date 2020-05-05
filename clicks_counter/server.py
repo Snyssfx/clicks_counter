@@ -11,7 +11,7 @@ async def on_client_connect(
         websocket: websockets.WebSocketServerProtocol, path: str
 ):
     validator = cerberus.Validator({
-        "id": {"required": True, "type": "int"},
+        "id": {"required": True, "type": "integer"},
         "label": {"required": True, "type": "string"},
     })
 
