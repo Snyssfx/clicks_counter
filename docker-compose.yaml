@@ -1,0 +1,40 @@
+version: '3.3'
+
+services:
+  server:
+    build: .
+    image: server:local
+    environment:
+      - HOST=0.0.0.0
+      - PORT=1234
+      - REDIS_URI=redis://redis:6379/0
+      - DB_UPDATE_SEC=1
+
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USER=root
+      - DB=statistics
+      - DB_PASSWORD=123
+
+    depends_on:
+      - redis
+      - mysql
+    volumes:
+      - ".:/app"
+
+  redis:
+    image: redis:5.0.5-alpine
+    restart: unless-stopped
+
+  mysql:
+    image: percona:5.7
+    restart: unless-stopped
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=123
+      - MYSQL_USER=server
+      - MYSQL_PASSWORD=123
+
+volumes:
+  mysql-data:
