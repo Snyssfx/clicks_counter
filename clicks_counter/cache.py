@@ -27,5 +27,14 @@ async def get_from_cache():
     all_labels = await Redis.pool.smembers("all_labels")
     for label in all_labels:
         label = label.decode()
-        all_pages = await Redis.pool.hgetall(label)
-        yield label, all_pages
+
+        transaction = Redis.pool.multi_exec()
+
+        ids_to_counters = transaction.hgetall(label)
+        transaction.srem("all_labels", label)
+        transaction.delete(label)
+
+        await transaction.execute()
+        ids_to_counters = await ids_to_counters
+
+        yield label, ids_to_counters
