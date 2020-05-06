@@ -1,12 +1,12 @@
 # clicks_counter
 The server waits for websocket connection from clients,
 then get some statistical info,
-e.g.: `{"id": 123, "label": "view"}`
-and store it in database.
+e.g.: `{"id": 123, "label": "view"}`,
+increment counters and store them in database.
 
 The server can be split to 2 parts:
-1) websocket server, that store all info in cache (redis here)
-2) coroutine that consume the info from redis and store
+1) websocket server, that store accumulate all info in cache (redis here)
+2) coroutine that consume that info from redis and store
 it in database (MySQL)
 
 
