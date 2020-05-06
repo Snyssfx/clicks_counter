@@ -4,7 +4,6 @@ from contextlib import asynccontextmanager
 import aiomysql
 
 from clicks_counter.cache import get_from_cache
-from clicks_counter.settings import DB_UPDATE_SEC
 
 
 class MySQL:
