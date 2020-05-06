@@ -7,6 +7,7 @@ import websockets
 
 from clicks_counter.cache import Redis
 from clicks_counter.database import MySQL
+from clicks_counter.server import create_server
 from main import main
 
 messages = [
@@ -49,22 +50,25 @@ async def server():
     async with MySQL.get_cur() as cur:
         await cur.execute(f"DELETE from clicks")
 
-    asyncio.create_task(main(
+    server = create_server(host, port)
+    task = asyncio.create_task(main(
+        server,
         db_host,
         db_port,
         db_user,
         db_pass,
         db_name,
-        host,
-        port,
         redis_uri,
         db_update_sec,
     ))
     await asyncio.sleep(db_update_sec)
 
-    yield
+    yield server
 
+    server.ws_server.close()
+    await server.ws_server.wait_closed()
     await MySQL.close()
+    await task
 
 
 async def send_messages():
@@ -89,7 +93,6 @@ async def test_redis_is_empty(server):
     await send_messages()
     await asyncio.sleep(db_update_sec + 1)
 
-    breakpoint()
     all_keys = await Redis.pool.keys("*")
     assert all_keys == []
 

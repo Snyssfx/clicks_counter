@@ -34,12 +34,16 @@ class MySQL:
             await conn.commit()
 
 
-async def update_db(db_update_sec):
+async def update_db_loop(db_update_sec):
     while True:
         await asyncio.sleep(db_update_sec)
-        async for label, ids_to_counters in get_from_cache():
-            async with MySQL.get_cur() as cur:
-                await _insert_or_update(cur, label, ids_to_counters)
+        await update_db()
+
+
+async def update_db():
+    async for label, ids_to_counters in get_from_cache():
+        async with MySQL.get_cur() as cur:
+            await _insert_or_update(cur, label, ids_to_counters)
 
 
 async def _insert_or_update(cursor: aiomysql.Cursor, label, page_id_to_counter):

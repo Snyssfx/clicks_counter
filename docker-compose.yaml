@@ -21,6 +21,7 @@ services:
       - mysql
     volumes:
       - ".:/app"
+    restart: unless-stopped
 
   redis:
     image: redis:5.0.5-alpine
@@ -38,3 +39,4 @@ services:
 
 volumes:
   mysql-data:
+    external: true
