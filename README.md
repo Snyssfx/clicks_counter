@@ -5,7 +5,7 @@ e.g.: `{"id": 123, "label": "view"}`,
 increment counters and store them in database.
 
 The server can be split to 2 parts:
-1) websocket server, that store accumulate all info in cache (redis here)
+1) websocket server, that accumulate all info in cache (redis here)
 2) coroutine that consume that info from redis and store
 it in database (MySQL)
 
